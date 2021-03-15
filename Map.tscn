@@ -4,15 +4,15 @@
 [ext_resource path="res://Obstacle.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Map.gd" type="Script" id=3]
 
-[sub_resource type="NavigationPolygon" id=3]
+[sub_resource type="NavigationPolygon" id=1]
 vertices = PoolVector2Array( 1024, 0, 1024, 600, 0, 600, 0, 0 )
 polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
 outlines = [ PoolVector2Array( 0, 0, 0, 600, 1024, 600, 1024, 0 ) ]
 
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 64, 64 )
 
-[sub_resource type="RectangleShape2D" id=2]
+[sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 568, 80 )
 
 [node name="Map" type="Node2D"]
@@ -26,7 +26,7 @@ __meta__ = {
 }
 
 [node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="Navigation2D"]
-navpoly = SubResource( 3 )
+navpoly = SubResource( 1 )
 
 [node name="Base" type="StaticBody2D" parent="."]
 position = Vector2( 512, 448 )
@@ -36,7 +36,7 @@ __meta__ = {
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Base"]
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="Base2" type="StaticBody2D" parent="."]
 position = Vector2( 144, 400 )
@@ -46,7 +46,7 @@ __meta__ = {
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Base2"]
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="SpawnArea" type="Area2D" parent="."]
 position = Vector2( 512, 0 )
@@ -56,7 +56,7 @@ __meta__ = {
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SpawnArea"]
-shape = SubResource( 2 )
+shape = SubResource( 3 )
 
 [node name="Obstacle" parent="." instance=ExtResource( 2 )]
 position = Vector2( 168, 232 )
@@ -71,7 +71,7 @@ position = Vector2( 736, 400 )
 position = Vector2( 760, 200 )
 
 [node name="Obstacle5" parent="." instance=ExtResource( 2 )]
-position = Vector2( 72, 216 )
+position = Vector2( 192, 208 )
 
 [node name="Obstacle6" parent="." instance=ExtResource( 2 )]
 position = Vector2( 304, 424 )
