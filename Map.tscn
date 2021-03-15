@@ -42,7 +42,7 @@ shape = SubResource( 2 )
 position = Vector2( 168, 232 )
 
 [node name="Obstacle2" parent="." instance=ExtResource( 2 )]
-position = Vector2( 464, 184 )
+position = Vector2( 240, 152 )
 
 [node name="Obstacle3" parent="." instance=ExtResource( 2 )]
 position = Vector2( 736, 400 )
