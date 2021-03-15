@@ -1,26 +1,23 @@
 extends Navigation2D
-const CIRCLE_SIDES := 6
-const POLYGON_DRAW_STEP := 15
-const POLYGON_DRAW_INTERVAL := 0.1
-const GRID_CELL_SIZE := 64
+const CIRCLE_SIDES := 8
+const GRID_CELL_SIZE := 128
 
-onready var poly: NavigationPolygonInstance = $NavigationPolygonInstance
-
-var drawn_polygons = 0
+onready var nav_poly_node: NavigationPolygonInstance = $NavigationPolygonInstance
 
 func _ready() -> void:
 	var points := []
-	for y in (600 / GRID_CELL_SIZE) + 1:
-		for x in (1024 / GRID_CELL_SIZE) + 1:
+	for y in (600 / GRID_CELL_SIZE) + 2:
+		for x in (1024 / GRID_CELL_SIZE) + 2:
 			points.append(GRID_CELL_SIZE * Vector2(x, y))
 	prints('points', points.size())
 	var del = Geometry.triangulate_delaunay_2d(points)
 
-	poly.navpoly.clear_polygons()
-	poly.navpoly.clear_outlines()
-	poly.navpoly.vertices = points
+	var np := nav_poly_node.navpoly
+	np.clear_polygons()
+	np.clear_outlines()
+	np.vertices = points
 	for i in range(0, del.size(), 3):
-		poly.navpoly.add_polygon([
+		np.add_polygon([
 			del[i],
 			del[i + 1],
 			del[i + 2],
@@ -28,21 +25,16 @@ func _ready() -> void:
 	update()
 
 	# validate navpoly
-	var vs := poly.navpoly.vertices
-	for i in poly.navpoly.get_polygon_count():
-		var pg = poly.navpoly.get_polygon(i)
+	var vs := np.vertices
+	for i in np.get_polygon_count():
+		var pg = np.get_polygon(i)
 		for p in pg:
 			assert(p >= 0 && p < vs.size())
 
-	yield (get_tree().create_timer(4.0), "timeout")
+	yield (get_tree().create_timer(1.0), "timeout")
 	adapt()
 
-
-func adapt() -> void:
-	if not is_inside_tree():
-		return
-	# var cs := get_tree().current_scene
-
+func get_all_bodies() -> Array:
 	var state := get_world_2d().direct_space_state
 
 	var shape := RectangleShape2D.new()
@@ -54,46 +46,55 @@ func adapt() -> void:
 	query.collide_with_bodies = true
 	query.collide_with_areas = false
 
-	var collisions := state.intersect_shape(query)
-	if collisions.empty():
-		return
+	var bodies = []
+	for result in state.intersect_shape(query):
+		bodies.append(result.collider)
+	return bodies
 
-	var vertices :PoolVector2Array = poly.navpoly.get_vertices()
+func get_nav_polygons() -> Array:
+	var np := nav_poly_node.navpoly
+	var vertices: PoolVector2Array = np.get_vertices()
 	prints('vertices', vertices.size())
 	var polygons := []
-	for i in poly.navpoly.get_polygon_count():
+	for i in np.get_polygon_count():
 		var p := []
-		for index in poly.navpoly.get_polygon(i):
+		for index in np.get_polygon(i):
 			p.append(vertices[index])
 		polygons.append(p)
-	prints('nav polygons', polygons)
+	prints('nav polygons', polygons.size())
+	return polygons
 
+func clip_polygons(polygons:Array, clips:Array) -> Array:
 	var results = []
 	for p in polygons:
 		var current = [p]
-		for c in collisions:
-			var polygon = polygon_from_body(c.collider)
+		for clip in clips:
+			var clip_aabb = GoostGeometry2D.bounding_rect(clip)
 			var next = []
-			for p2 in current:
-				var clipped := GoostGeometry2D.clip_polygons(p2, polygon)
-
-				var convexed = PolyDecomp2D.decompose_polygons(
-					clipped, PolyDecomp2D.DECOMP_TRIANGLES_MONO)
+			for poly in current:
+				var aabb = GoostGeometry2D.bounding_rect(poly)
+				if not aabb.intersects(clip_aabb):
+					next.append(poly)
+					continue
+				var clipped := GoostGeometry2D.clip_polygons(poly, clip)
+				var convexed = PolyDecomp2D.decompose_polygons(clipped, PolyDecomp2D.DECOMP_TRIANGLES_MONO)
 				for r in convexed:
 					next.append(r)
 			current = next
 		for c in current:
 			results.append(c)
 	prints('results', results.size())
+	return results
 
+func create_nav_poly(results:Array) -> NavigationPolygon:
 	# create new vertices base set
-	vertices = []
+	var vertices := []
 	for convex in results:
 		for point in convex:
 			if find_index(point, vertices) == -1:
 				vertices.append(point)
 	# create polygons from the base vertices
-	polygons = []
+	var polygons := []
 	for convex in results:
 		var polygon :PoolIntArray= []
 		for i in convex.size():
@@ -102,27 +103,44 @@ func adapt() -> void:
 			assert(vertex_index >= 0 && vertex_index < vertices.size())
 			polygon.append(vertex_index)
 		polygons.append(polygon)
-
-
+	# add everything to a navigation polygon
 	var navpoly := NavigationPolygon.new()
 	navpoly.vertices = vertices
 	for polygon in polygons:
 		navpoly.add_polygon(polygon)
+
+	return navpoly
+
+func adapt() -> void:
+	if not is_inside_tree():
+		return
+
+	var bodies := get_all_bodies()
+	if bodies.empty():
+		return
+
+	var polygons = get_nav_polygons()
+
+	var clips := []
+	for body in bodies:
+		clips.append(polygon_from_body(body))
+
+	var results := clip_polygons(polygons, clips)
+
+	var navpoly := create_nav_poly(results)
+
 	prints('outlines:', navpoly.get_outline_count())
 	prints('polygons:', navpoly.get_polygon_count())
-	poly.navpoly = navpoly
-	drawn_polygons = 0
+	nav_poly_node.navpoly = navpoly
 	update()
 
 
 func _draw() -> void:
 	var cs := GoostEngine.get_color_constants().values()
-	var np := poly.navpoly
+	var np := nav_poly_node.navpoly
 	var vs := np.get_vertices()
 	var total := np.get_polygon_count()
-	drawn_polygons += POLYGON_DRAW_STEP
-	var max_it := int(min(drawn_polygons, total))
-	for i in max_it:
+	for i in total:
 		var ids :=  np.get_polygon(i)
 		var p: PoolVector2Array = []
 		for id in ids:
@@ -132,9 +150,6 @@ func _draw() -> void:
 		var color = cs[i % cs.size()]
 		color.a = 0.12
 		draw_polygon(p, [color])
-	if drawn_polygons < total:
-		yield (get_tree().create_timer(POLYGON_DRAW_INTERVAL), "timeout")
-		update()
 
 static func find_index(value, list):
 	for i in list.size():
