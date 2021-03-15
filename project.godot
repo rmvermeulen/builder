@@ -16,6 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="builder"
+run/main_scene="res://Map.tscn"
 config/icon="res://icon.png"
 
 [rendering]
