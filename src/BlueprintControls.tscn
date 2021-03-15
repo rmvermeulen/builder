@@ -1,8 +1,29 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://src/BlueprintControls.gd" type="Script" id=1]
 
-[node name="BlueprintControls" type="Control"]
+[sub_resource type="InputEventKey" id=1]
+pressed = true
+scancode = 66
+
+[sub_resource type="ShortCut" id=2]
+shortcut = SubResource( 1 )
+
+[sub_resource type="InputEventKey" id=3]
+pressed = true
+scancode = 84
+
+[sub_resource type="ShortCut" id=4]
+shortcut = SubResource( 3 )
+
+[sub_resource type="InputEventKey" id=5]
+pressed = true
+scancode = 72
+
+[sub_resource type="ShortCut" id=6]
+shortcut = SubResource( 5 )
+
+[node name="BlueprintControls" type="HBoxContainer"]
 margin_right = 40.0
 margin_bottom = 40.0
 script = ExtResource( 1 )
@@ -10,6 +31,37 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button" type="Button" parent="."]
-margin_right = 12.0
-margin_bottom = 20.0
+[node name="Block" type="Button" parent="."]
+margin_right = 64.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 64, 64 )
+toggle_mode = true
+shortcut = SubResource( 2 )
+text = "Block"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tower" type="Button" parent="."]
+margin_left = 68.0
+margin_right = 132.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 64, 64 )
+toggle_mode = true
+shortcut = SubResource( 4 )
+text = "Tower"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="House" type="Button" parent="."]
+margin_left = 136.0
+margin_right = 200.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 64, 64 )
+toggle_mode = true
+shortcut = SubResource( 6 )
+text = "House"
+__meta__ = {
+"_edit_use_anchors_": false
+}
