@@ -1,7 +1,12 @@
 extends Node2D
 
+const Block := preload("res://src/Block.tscn")
+const Tower := preload("res://src/Obstacle.tscn")
+
 var fp := Vector2()
 var path: PoolVector2Array = []
+
+onready var nav: Navigation2D = $Navigation2D
 
 
 func _input(event: InputEvent) -> void:
@@ -16,7 +21,19 @@ func _input(event: InputEvent) -> void:
 					fp = get_local_mouse_position()
 				update()
 			BUTTON_RIGHT:
-				pass
+				var node = null
+				match Game.state.blueprint:
+					0:
+						node = Block.instance()
+					1:
+						node = Tower.instance()
+					_:
+						prints("not implemented")
+				if not node:
+					return
+				add_child(node)
+				node.position = event.position
+				nav.adapt()
 
 
 func _draw() -> void:
