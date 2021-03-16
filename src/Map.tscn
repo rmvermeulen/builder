@@ -6,17 +6,13 @@
 [ext_resource path="res://src/Block.tscn" type="PackedScene" id=4]
 [ext_resource path="res://src/LagDetector.gd" type="Script" id=5]
 [ext_resource path="res://src/BlueprintControls.tscn" type="PackedScene" id=6]
+[ext_resource path="res://src/Base.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Spawner.tscn" type="PackedScene" id=8]
 
 [sub_resource type="NavigationPolygon" id=1]
 vertices = PoolVector2Array( 1024, 0, 1024, 600, 0, 600, 0, 0 )
 polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
 outlines = [ PoolVector2Array( 0, 0, 0, 600, 1024, 600, 1024, 0 ) ]
-
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 64, 64 )
-
-[sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 568, 80 )
 
 [node name="Map" type="Node2D"]
 script = ExtResource( 3 )
@@ -35,25 +31,11 @@ __meta__ = {
 [node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="Navigation2D"]
 navpoly = SubResource( 1 )
 
-[node name="Base" type="StaticBody2D" parent="."]
-position = Vector2( 512, 448 )
-__meta__ = {
-"_edit_group_": true,
-"_edit_lock_": true
-}
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Base"]
-shape = SubResource( 2 )
-
-[node name="SpawnArea" type="Area2D" parent="."]
-position = Vector2( 512, 0 )
-__meta__ = {
-"_edit_group_": true,
-"_edit_lock_": true
-}
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SpawnArea"]
-shape = SubResource( 3 )
+[node name="Spawner" parent="." instance=ExtResource( 8 )]
+position = Vector2( 512, 32 )
+spawn_interval = 0.1
+extents = Vector2( 400, 32 )
+spawn_parties = [ [ 0, 0 ], [ 0, 1 ], [ 0, 1, 2 ] ]
 
 [node name="Obstacle" parent="." instance=ExtResource( 2 )]
 position = Vector2( 168, 232 )
@@ -70,3 +52,6 @@ position = Vector2( 336, 344 )
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="BlueprintControls" parent="CanvasLayer" instance=ExtResource( 6 )]
+
+[node name="Base" parent="." instance=ExtResource( 7 )]
+position = Vector2( 512, 508 )

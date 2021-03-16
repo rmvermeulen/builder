@@ -3,7 +3,9 @@
 [sub_resource type="CircleShape2D" id=1]
 radius = 24.0
 
-[node name="Obstacle" type="StaticBody2D"]
+[node name="Obstacle" type="StaticBody2D" groups=[
+"buildings",
+]]
 __meta__ = {
 "_edit_group_": true
 }
