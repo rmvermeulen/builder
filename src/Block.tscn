@@ -1,7 +1,7 @@
 [gd_scene load_steps=2 format=2]
 
-[sub_resource type="CircleShape2D" id=1]
-radius = 24.0
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 24, 16 )
 
 [node name="Block" type="StaticBody2D"]
 __meta__ = {
