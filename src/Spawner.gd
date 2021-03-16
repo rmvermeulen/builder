@@ -6,9 +6,10 @@ const EnemyType = preload("res://src/Enemy.gd").TYPE
 
 export (float, 0.1, 30) var spawn_interval := 10.0 setget set_spawn_interval
 export (Vector2) var extents := Vector2(128, 128) setget set_extents
-export (Array, Array, EnemyType) var spawn_parties := [] setget set_spawn_parties
+export (Array, Array, EnemyType) var spawn_waves := [] setget set_spawn_waves
 
 var _active_timer: SceneTreeTimer = null
+var _party_index := 0
 
 
 func _ready() -> void:
@@ -47,15 +48,15 @@ func set_extents(value: Vector2):
 	update()
 
 
-func set_spawn_parties(value: Array):
+func set_spawn_waves(value: Array):
 	var valid_types := []
-	for party in value:
+	for wave in value:
 		var valid_party := []
-		for item in party:
-			if item >= 0 && item < EnemyType.size():
-				valid_party.append(item)
+		for enemy in wave:
+			if enemy >= 0 && enemy < EnemyType.size():
+				valid_party.append(enemy)
 		valid_types.append(valid_party)
-	spawn_parties = valid_types
+	spawn_waves = valid_types
 	update()
 
 
@@ -69,6 +70,10 @@ func _on_interval_timer():
 
 	# do the spawning
 	prints('spawn interval')
+	var wave = spawn_waves[_party_index]
+	_party_index = (_party_index + 1) % spawn_waves.size()
+	for enemy in wave:
+		prints('spawning', enemy)
 
 	# restart the clock
 	start_interval()

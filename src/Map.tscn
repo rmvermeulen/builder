@@ -33,7 +33,7 @@ navpoly = SubResource( 1 )
 
 [node name="Spawner" parent="." instance=ExtResource( 8 )]
 position = Vector2( 512, 32 )
-spawn_interval = 0.1
+spawn_interval = 2.5
 extents = Vector2( 400, 32 )
 spawn_parties = [ [ 0, 0 ], [ 0, 1 ], [ 0, 1, 2 ] ]
 
