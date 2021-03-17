@@ -8,7 +8,9 @@ var path: PoolVector2Array = []
 
 onready var nav: Navigation2D = $Navigation2D
 
-
+func _process(delta):
+	update()
+		
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton && event.pressed:
 		match event.button_index:
@@ -38,7 +40,14 @@ func _input(event: InputEvent) -> void:
 
 func _draw() -> void:
 	if fp:
-		draw_circle(fp, 16, Color.red)
+		draw_circle(fp, 3, Color.red)
 	if path && path.size() >= 2:
-		prints('path', path)
 		draw_polyline(path, Color.red)
+	var mp := get_local_mouse_position()
+	match Game.state.blueprint:
+		0:  
+			var extents = Vector2(24, 16)
+			var rect := Rect2(mp - extents, 2 * extents)
+			draw_rect(rect, Color.red, false)
+		1: draw_arc(mp, 24, 0, TAU, 24, Color.red)
+		_: pass
