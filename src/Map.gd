@@ -1,5 +1,6 @@
 extends Node2D
 
+const Enemy := preload("res://src/Enemy.gd")
 const Block := preload("res://src/Block.tscn")
 const Tower := preload("res://src/Obstacle.tscn")
 
@@ -51,3 +52,7 @@ func _draw() -> void:
 			draw_rect(rect, Color.red, false)
 		1: draw_arc(mp, 24, 0, TAU, 24, Color.red)
 		_: pass
+	for child in get_children():
+		if not (child is Enemy):
+			continue
+		draw_multiline(child.path, Color.yellow)

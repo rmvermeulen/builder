@@ -1,12 +1,15 @@
 tool
 extends Node2D
 
+const EnemyScene := preload("res://src/Enemy.tscn")
 const Enemy := preload("res://src/Enemy.gd")
 const EnemyType = preload("res://src/Enemy.gd").TYPE
 
 export (float, 0.1, 30) var spawn_interval := 10.0 setget set_spawn_interval
 export (Vector2) var extents := Vector2(128, 128) setget set_extents
-export (Array, Array, EnemyType) var spawn_waves := [] setget set_spawn_waves
+export (Array, Array, EnemyType) var spawn_waves := [
+	[EnemyType.ALPHA, EnemyType.ALPHA]
+] setget set_spawn_waves 
 
 var _active_timer: SceneTreeTimer = null
 var _party_index := 0
@@ -72,8 +75,13 @@ func _on_interval_timer():
 	prints('spawn interval')
 	var wave = spawn_waves[_party_index]
 	_party_index = (_party_index + 1) % spawn_waves.size()
-	for enemy in wave:
-		prints('spawning', enemy)
+	for type in wave:
+		var enemy := EnemyScene.instance()
+		enemy.type = type
+		get_parent().add_child(enemy)
+		enemy.position = position + Vector2(
+			((randf() * 2) - 1) * extents.x,
+			((randf() * 2) - 1) * extents.y)
 
 	# restart the clock
 	start_interval()
