@@ -174,12 +174,12 @@ static func polygon_from_body(body: PhysicsBody2D) -> PoolVector2Array:
 
 		[phs.SHAPE_RECTANGLE, TYPE_VECTOR2]:
 			prints("rect, extents =", data)
-			var half: Vector2= data * 0.5
+			var extents: Vector2 = data
 			polygon = PoolVector2Array([
-				-half,
-				Vector2(half.x, -half.y),
-				half,
-				Vector2(-half.x, half.y),
+				-extents,
+				Vector2(extents.x, -extents.y),
+				extents,
+				Vector2(-extents.x, extents.y),
 			])
 
 		[_, TYPE_VECTOR2_ARRAY]:
