@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://src/GridCursor.gd" type="Script" id=1]
+[ext_resource path="res://src/GridWorld.gd" type="Script" id=2]
+
+[node name="GridWorld" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="GridCursor" type="Node2D" parent="."]
+position = Vector2( 504, 352 )
+script = ExtResource( 1 )
