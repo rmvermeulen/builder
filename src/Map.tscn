@@ -34,7 +34,8 @@ navpoly = SubResource( 1 )
 [node name="Spawner" parent="." instance=ExtResource( 8 )]
 position = Vector2( 512, 32 )
 spawn_interval = 3.0
-extents = Vector2( 400, 32 )
+extents = Vector2( 200, 16 )
+spawn_waves = [ [ 0, 0 ] ]
 
 [node name="Obstacle" parent="." instance=ExtResource( 2 )]
 position = Vector2( 168, 232 )

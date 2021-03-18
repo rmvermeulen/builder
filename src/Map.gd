@@ -46,13 +46,17 @@ func _draw() -> void:
 		draw_polyline(path, Color.red)
 	var mp := get_local_mouse_position()
 	match Game.state.blueprint:
-		0:  
+		0:
 			var extents = Vector2(24, 16)
 			var rect := Rect2(mp - extents, 2 * extents)
 			draw_rect(rect, Color.red, false)
-		1: draw_arc(mp, 24, 0, TAU, 24, Color.red)
-		_: pass
+		1:
+			draw_arc(mp, 24, 0, TAU, 24, Color.red)
+		_:
+			pass
 	for child in get_children():
 		if not (child is Enemy):
+			continue
+		if child.path.size() < 2:
 			continue
 		draw_multiline(child.path, Color.yellow)
