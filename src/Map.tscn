@@ -7,7 +7,7 @@
 [ext_resource path="res://src/LagDetector.gd" type="Script" id=5]
 [ext_resource path="res://src/BlueprintControls.tscn" type="PackedScene" id=6]
 [ext_resource path="res://src/Base.tscn" type="PackedScene" id=7]
-[ext_resource path="res://Spawner.tscn" type="PackedScene" id=8]
+[ext_resource path="res://src/Spawner.tscn" type="PackedScene" id=8]
 
 [sub_resource type="NavigationPolygon" id=1]
 vertices = PoolVector2Array( 1024, 0, 1024, 600, 0, 600, 0, 0 )
