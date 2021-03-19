@@ -9,9 +9,11 @@ var path: PoolVector2Array = []
 
 onready var nav: Navigation2D = $Navigation2D
 
+
 func _process(delta):
 	update()
-		
+
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton && event.pressed:
 		match event.button_index:
@@ -59,4 +61,4 @@ func _draw() -> void:
 			continue
 		if child.path.size() < 2:
 			continue
-		draw_multiline(child.path, Color.yellow)
+		draw_polyline(child.path, Color.yellow)
